@@ -8,10 +8,11 @@ def create_onedrive_directdownload (onedrive_link):
     data_bytes64_String = data_bytes64.decode('utf-8').replace('/','_').replace('+','-').rstrip("=")
     resultUrl = f"https://api.onedrive.com/v1.0/shares/u!{data_bytes64_String}/root/content"
     return resultUrl
-first = "https://1drv.ms/x/s!AsazVgCmXrNWxmDxzZCuGdnRd-R1?e=h08E6s"
-filenames = ["Fast0314", "Fast0314_2", "Normal0314", "Slow0314"]
-files = ["https://1drv.ms/x/s!AsazVgCmXrNWxmDxzZCuGdnRd-R1?e=ThKRjA", "https://1drv.ms/x/s!AsazVgCmXrNWxmLMqAlpfwnPPvsd?e=RFQo5W"
-        , "https://1drv.ms/x/s!AsazVgCmXrNWxmHSfwB0dloFY5Or?e=8fvGxf", "https://1drv.ms/x/s!AsazVgCmXrNWxmOJDDcTM6WeyBJT?e=bIMiMG"
+first = "https://1drv.ms/u/s!Ao3uECOrt_zivFsWZaLIUT2MCYNd?e=3OSLQT"
+filenames = ["FastACCELEROMETER0328", "FastGYROSCOPE0328",
+             "NormalACCELEROMETER0328", "NormalGYROSCOPE0328"]
+files = ["https://1drv.ms/u/s!Ao3uECOrt_zivFsWZaLIUT2MCYNd?e=3OSLQT", "https://1drv.ms/u/s!Ao3uECOrt_zivFzbxJbBqd6EHHzI?e=LdcSSy"
+        , "https://1drv.ms/u/s!Ao3uECOrt_zivFqGnublBPKyWbg7?e=4OGr32", "https://1drv.ms/u/s!Ao3uECOrt_zivFmiE6GQ5w-PkeLG?e=aaB4lT"
         ]
 st.sidebar.header('Data Selector')
 st.sidebar.subheader('Select or upload the data you would like to view here')
