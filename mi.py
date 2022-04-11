@@ -1,7 +1,7 @@
 import streamlit as st
 import base64
 import pandas as pd
-import pickle
+import pickle as pl
 import pathlib
 
 from Measurement import Measurement
@@ -43,7 +43,7 @@ files = ["https://1drv.ms/u/s!Ao3uECOrt_zivFsWZaLIUT2MCYNd?e=3OSLQT", "https://1
 st.sidebar.header('Data Selector')
 
 st.sidebar.subheader('Select or upload the data you would like to view here')
-uploaded_file = st.sidebar.file_uploader("Upload excel file", type=["xlsx", "csv"])
+uploaded_file = st.sidebar.file_uploader("Upload excel or pickle file", type=["xlsx", "csv", "pickle"])
 
 selected = st.sidebar.selectbox('Select file by name', filenames)
 
