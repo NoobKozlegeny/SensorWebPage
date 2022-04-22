@@ -1,3 +1,4 @@
+import pylint
 import streamlit as st
 import base64
 import pandas as pd
@@ -8,7 +9,7 @@ import numpy as np
 import pandas as pd
 
 from pathlib import Path
-from matplotlib import pyplot
+from matplotlib import pyplot as plt
 #%matplotlib inline
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, confusion_matrix, plot_confusion_matrix
@@ -33,7 +34,7 @@ def visualize_data ():
     st.line_chart(accelerometer_df)
     st.write(f"This is {filenames[filenames.index(selected) + 1]}'s data.")
     st.line_chart(gyro_df)
-    
+   
 # #Runs classifications
 # def run_classifications(X, y):
 #     #Classifications
@@ -126,21 +127,27 @@ if filename is not "":
     pred_LR = loaded_model.model_LR.predict(X_test)
     pred_V = loaded_model.model_V.predict(X_test)
     st.write("DecisionTreeClassifier accuracy: ", accuracy_score(y_test, pred_DT))
-    #st.write(confusion_matrix(y_test, pred_DT))
+    st.write(pred_DT)
     plot_confusion_matrix(loaded_model.model_DT, X_test, y_test)
     st.pyplot()
     st.write("KNeighborsClassifier accuracy: ", accuracy_score(y_test, pred_KNN))
-    #st.write(confusion_matrix(y_test, pred_KNN))
+    st.write(pred_KNN)
     plot_confusion_matrix(loaded_model.model_KNN, X_test, y_test)
     st.pyplot()
     st.write("LogisticRegression accuracy: ", accuracy_score(y_test, pred_LR))
-    #st.write(confusion_matrix(y_test, pred_LR))
+    st.write(pred_LR)
     plot_confusion_matrix(loaded_model.model_LR, X_test, y_test)
     st.pyplot()
     st.write("VotingClassifier accuracy: ", accuracy_score(y_test, pred_V))
-    #st.write(confusion_matrix(y_test, pred_V)) 
+    st.write(pred_V)
     plot_confusion_matrix(loaded_model.model_V, X_test, y_test)
-    st.pyplot()  
+    st.pyplot()
+    # A plot attempt, looks weird
+    # fig, ax = plt.subplots()
+    # ax.plot(pred_DT, 'bo')
+    # ax.plot(y_test, 'ro')
+    # st.pyplot(fig)
+    
 
 #---------------------------------------------------------------------
 
