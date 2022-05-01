@@ -17,6 +17,7 @@ from sklearn.metrics import accuracy_score, confusion_matrix, plot_confusion_mat
 #My classes
 from Measurement import Measurement
 from Test import Iris
+from LexiDataset import WallClimbing
 
 st.set_option('deprecation.showPyplotGlobalUse', False)
 
@@ -34,39 +35,6 @@ def visualize_data ():
     st.line_chart(accelerometer_df)
     st.write(f"This is {filenames[filenames.index(selected) + 1]}'s data.")
     st.line_chart(gyro_df)
-   
-# #Runs classifications
-# def run_classifications(X, y):
-#     #Classifications
-#     model1 = DecisionTreeClassifier(random_state=2)
-#     model2 = KNeighborsClassifier(n_neighbors=50)
-#     model3 = LogisticRegression(random_state=2, max_iter=5000)
-#     vc = VotingClassifier(estimators=[('lr', model1), ('rf', model2), ('gnb', model3)], voting='hard')
-
-#     st.write("DecisionTreeClassifier:")
-#     st.line_chart(pd.DataFrame(data=stacking(model1, X, y)))
-#     st.write(model1.predict(X))
-    
-#     st.write("KNeighborsClassifier:")
-#     st.line_chart(pd.DataFrame(data=stacking(model2, X, y)))
-#     st.write("DecisionTreeClassifier:")
-    
-#     st.write("LogisticRegression:")
-#     st.line_chart(pd.DataFrame(data=stacking(model3, X, y)))
-#     st.write("DecisionTreeClassifier:")
-#     #stacking(model1, X, y)
-    
-    
-
-# def stacking(model,X,y):
-#     # split the Train dataset again
-#     X_train2, X_test2, y_train2, y_test2 = train_test_split(X, y, test_size=0.2, random_state=2)
-#     # fit the model on the NEW train dataset
-#     model.fit(X_train2, y_train2)
-#     # print the accuracy of the model on the NEW test dataset
-#     st.write("accuracy:", model.score(X_test2, y_test2))
-#     # return the model prediction of whole X dataset
-#     return model.predict(X)
 
 first = "https://1drv.ms/u/s!Ao3uECOrt_zivFsWZaLIUT2MCYNd?e=3OSLQT"
 filenames = ["FastACCELEROMETER0328", "FastGYROSCOPE0328",
@@ -119,35 +87,47 @@ if filename is not "":
     st.write("Model loaded")
     
     #Getting test data
-    X_train, X_test, y_train, y_test = train_test_split(loaded_model.X, loaded_model.y, test_size=0.2, random_state=2)
+    X_train, X_test, y_train, y_test = train_test_split(loaded_model.X, loaded_model.y, test_size=0.2, random_state=69)
     
     #Running classification/predicting
-    pred_DT = loaded_model.model_DT.predict(X_test)
-    pred_KNN = loaded_model.model_KNN.predict(X_test)
-    pred_LR = loaded_model.model_LR.predict(X_test)
-    pred_V = loaded_model.model_V.predict(X_test)
-    st.write("DecisionTreeClassifier accuracy: ", accuracy_score(y_test, pred_DT))
-    st.write(pred_DT)
-    plot_confusion_matrix(loaded_model.model_DT, X_test, y_test)
-    st.pyplot()
-    st.write("KNeighborsClassifier accuracy: ", accuracy_score(y_test, pred_KNN))
-    st.write(pred_KNN)
-    plot_confusion_matrix(loaded_model.model_KNN, X_test, y_test)
-    st.pyplot()
-    st.write("LogisticRegression accuracy: ", accuracy_score(y_test, pred_LR))
-    st.write(pred_LR)
-    plot_confusion_matrix(loaded_model.model_LR, X_test, y_test)
-    st.pyplot()
-    st.write("VotingClassifier accuracy: ", accuracy_score(y_test, pred_V))
-    st.write(pred_V)
-    plot_confusion_matrix(loaded_model.model_V, X_test, y_test)
-    st.pyplot()
-    # A plot attempt, looks weird
-    # fig, ax = plt.subplots()
-    # ax.plot(pred_DT, 'bo')
-    # ax.plot(y_test, 'ro')
-    # st.pyplot(fig)
+    # pred_DT = loaded_model.model_DT.predict(X_test)
+    # pred_KNN = loaded_model.model_KNN.predict(X_test)
+    # pred_LR = loaded_model.model_LR.predict(X_test)
+    # pred_V = loaded_model.model_V.predict(X_test)
+    # st.write("DecisionTreeClassifier accuracy: ", accuracy_score(y_test, pred_DT))
+    # st.write(pred_DT)
+    # plot_confusion_matrix(loaded_model.model_DT, X_test, y_test)
+    # st.pyplot()
+    # st.write("KNeighborsClassifier accuracy: ", accuracy_score(y_test, pred_KNN))
+    # st.write(pred_KNN)
+    # plot_confusion_matrix(loaded_model.model_KNN, X_test, y_test)
+    # st.pyplot()
+    # st.write("LogisticRegression accuracy: ", accuracy_score(y_test, pred_LR))
+    # st.write(pred_LR)
+    # plot_confusion_matrix(loaded_model.model_LR, X_test, y_test)
+    # st.pyplot()
+    # st.write("VotingClassifier accuracy: ", accuracy_score(y_test, pred_V))
+    # st.write(pred_V)
+    # plot_confusion_matrix(loaded_model.model_V, X_test, y_test)
+    # st.pyplot()
     
+    # Wall Climbing
+    pred_DTC = loaded_model.modelDTC.predict(X_test)
+    pred_SVC = loaded_model.modelSVC.predict(X_test)
+    pred_GridSearchCV = loaded_model.modelGridSearchCV.predict(X_test)
+    
+    st.write("DecisionTreeClassifier accuracy: ", accuracy_score(y_test, pred_DTC))
+    st.write(pred_DTC)
+    plot_confusion_matrix(loaded_model.modelDTC, X_test, y_test)
+    st.pyplot()
+    st.write("SVC accuracy: ", accuracy_score(y_test, pred_SVC))
+    st.write(pred_SVC)
+    plot_confusion_matrix(loaded_model.modelSVC, X_test, y_test)
+    st.pyplot()
+    st.write("GridSearchCV accuracy: ", accuracy_score(y_test, pred_GridSearchCV))
+    st.write(pred_GridSearchCV)
+    plot_confusion_matrix(loaded_model.modelGridSearchCV, X_test, y_test)
+    st.pyplot()
 
 #---------------------------------------------------------------------
 
