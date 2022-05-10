@@ -115,7 +115,7 @@ if filename is not "":
     # st.write("GridSearchCV accuracy: ", accuracy_score(y_test, pred_GridSearchCV))
     # st.write(pred_GridSearchCV)
     # plot_confusion_matrix(loaded_model.modelGridSearchCV, X_test, y_test)
-    st.pyplot()
+    # st.pyplot()
 
 #---------------------------------------------------------------------
 
