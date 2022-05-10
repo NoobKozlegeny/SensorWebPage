@@ -1,3 +1,4 @@
+import imp
 import pylint
 import streamlit as st
 import base64
@@ -15,8 +16,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, confusion_matrix, plot_confusion_matrix
 
 #My classes
-from Measurement import Measurement
-from Test import Iris
+# from Measurement import Measurement
+# from Test import Iris
 from LexiDataset import WallClimbing
 
 st.set_option('deprecation.showPyplotGlobalUse', False)
@@ -60,25 +61,33 @@ You can view the data you uploaded or the data you selected from the list here
 st.write("""***""")
 
 if st.button('View uploaded'):
+    st.write("In here you can view your uploaded file's content.")
     if uploaded_file is not None:
         if pathlib.Path(uploaded_file.name).suffix == ".xlsx":
             udf = pd.read_excel(uploaded_file)
             st.write(udf)
-        else: 
+        elif pathlib.Path(uploaded_file.name).suffix == ".csv":
             cdf = pd.read_csv(uploaded_file)
             st.write(cdf)
+        elif pathlib.Path(uploaded_file.name).suffix == ".pickle":
+            pck = pd.read_csv(uploaded_file)
+            st.write(pck)
+        else:
+            st.write("Unknown file extension, I don't want to touch it.")
     else: 
         st.write('No file was uploaded!')
         
 st.write("""***""")
 
 if st.button('View selected'):
+    st.write("In here you can view an already uploaded file's content.")
     df = pd.read_csv(create_onedrive_directdownload(files[filenames.index(selected)]))
     st.write(df)
     
 st.write("""***""")
 
 st.write("""Model loading""")
+st.write("Enter the exact filename (that you uploaded) into the text, with the file extension too.")
 filename = st.text_input("Enter file name")
 
 if filename is not "":
@@ -90,31 +99,10 @@ if filename is not "":
     X_train, X_test, y_train, y_test = train_test_split(loaded_model.X, loaded_model.y, test_size=0.2, random_state=69)
     
     #Running classification/predicting
-    # pred_DT = loaded_model.model_DT.predict(X_test)
-    # pred_KNN = loaded_model.model_KNN.predict(X_test)
-    # pred_LR = loaded_model.model_LR.predict(X_test)
-    # pred_V = loaded_model.model_V.predict(X_test)
-    # st.write("DecisionTreeClassifier accuracy: ", accuracy_score(y_test, pred_DT))
-    # st.write(pred_DT)
-    # plot_confusion_matrix(loaded_model.model_DT, X_test, y_test)
-    # st.pyplot()
-    # st.write("KNeighborsClassifier accuracy: ", accuracy_score(y_test, pred_KNN))
-    # st.write(pred_KNN)
-    # plot_confusion_matrix(loaded_model.model_KNN, X_test, y_test)
-    # st.pyplot()
-    # st.write("LogisticRegression accuracy: ", accuracy_score(y_test, pred_LR))
-    # st.write(pred_LR)
-    # plot_confusion_matrix(loaded_model.model_LR, X_test, y_test)
-    # st.pyplot()
-    # st.write("VotingClassifier accuracy: ", accuracy_score(y_test, pred_V))
-    # st.write(pred_V)
-    # plot_confusion_matrix(loaded_model.model_V, X_test, y_test)
-    # st.pyplot()
-    
     # Wall Climbing
     pred_DTC = loaded_model.modelDTC.predict(X_test)
     pred_SVC = loaded_model.modelSVC.predict(X_test)
-    pred_GridSearchCV = loaded_model.modelGridSearchCV.predict(X_test)
+    # pred_GridSearchCV = loaded_model.modelGridSearchCV.predict(X_test)
     
     st.write("DecisionTreeClassifier accuracy: ", accuracy_score(y_test, pred_DTC))
     st.write(pred_DTC)
@@ -124,9 +112,9 @@ if filename is not "":
     st.write(pred_SVC)
     plot_confusion_matrix(loaded_model.modelSVC, X_test, y_test)
     st.pyplot()
-    st.write("GridSearchCV accuracy: ", accuracy_score(y_test, pred_GridSearchCV))
-    st.write(pred_GridSearchCV)
-    plot_confusion_matrix(loaded_model.modelGridSearchCV, X_test, y_test)
+    # st.write("GridSearchCV accuracy: ", accuracy_score(y_test, pred_GridSearchCV))
+    # st.write(pred_GridSearchCV)
+    # plot_confusion_matrix(loaded_model.modelGridSearchCV, X_test, y_test)
     st.pyplot()
 
 #---------------------------------------------------------------------
