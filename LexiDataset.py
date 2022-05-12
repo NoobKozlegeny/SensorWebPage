@@ -59,8 +59,8 @@ class WallClimbing():
 
     # Creating the modells
     modelDTC = DecisionTreeClassifier(criterion ='entropy', max_depth =2, random_state=69)
-    param_grid = {'C': [0.1, 1, 10, 100, 1000],
-                'gamma': [1, 0.1, 0.01, 0.001],
+    param_grid = {'C': [0.1], #, 1, 10, 100, 1000
+                'gamma': [1], #, 0.1, 0.01, 0.001
                 'kernel': ['rbf']}
     modelGridSearchCV = GridSearchCV(SVC(), param_grid, verbose = 2)
     

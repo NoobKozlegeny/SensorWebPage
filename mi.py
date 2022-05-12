@@ -46,22 +46,22 @@ files = ["https://1drv.ms/u/s!Ao3uECOrt_zivFsWZaLIUT2MCYNd?e=3OSLQT", "https://1
 
 st.sidebar.header('Data Selector')
 
-st.sidebar.subheader('Select or upload the data you would like to view here')
+st.sidebar.subheader('Select or upload the data you would like to view here. Correct formats: XLSX, CSV, PICKLE')
 uploaded_file = st.sidebar.file_uploader("Upload excel or pickle file", type=["xlsx", "csv", "pickle"])
 
 selected = st.sidebar.selectbox('Select file by name', filenames)
 
 st.write("""
-# Data viewer
+# Sporting intensivity detector system's data viewer
 
 You can view the data you uploaded or the data you selected from the list here
 
 """)
 
 st.write("""***""")
+st.write("In here you can view your uploaded file's content.")
 
 if st.button('View uploaded'):
-    st.write("In here you can view your uploaded file's content.")
     if uploaded_file is not None:
         if pathlib.Path(uploaded_file.name).suffix == ".xlsx":
             udf = pd.read_excel(uploaded_file)
@@ -70,17 +70,18 @@ if st.button('View uploaded'):
             cdf = pd.read_csv(uploaded_file)
             st.write(cdf)
         elif pathlib.Path(uploaded_file.name).suffix == ".pickle":
-            pck = pd.read_csv(uploaded_file)
-            st.write(pck)
+            HERE = Path(__file__).parent
+            loaded_model = pickle.load(open(HERE / uploaded_file.name, 'rb'))
+            st.write(loaded_model)
         else:
             st.write("Unknown file extension, I don't want to touch it.")
     else: 
         st.write('No file was uploaded!')
         
 st.write("""***""")
+st.write("In here you can view an already uploaded file's content.")
 
 if st.button('View selected'):
-    st.write("In here you can view an already uploaded file's content.")
     df = pd.read_csv(create_onedrive_directdownload(files[filenames.index(selected)]))
     st.write(df)
     
@@ -90,36 +91,52 @@ st.write("""Model loading""")
 st.write("Enter the exact filename (that you uploaded) into the text, with the file extension too.")
 filename = st.text_input("Enter file name")
 
-if filename is not "":
-    HERE = Path(__file__).parent
-    loaded_model = pickle.load(open(HERE / filename, 'rb'))
-    st.write("Model loaded")
+loaded_model = None
+
+if st.button("Classify pickle data"):
+    try:
+        HERE = Path(__file__).parent
+        loaded_model = pickle.load(open(HERE / filename, 'rb'))
+    except:
+        try: 
+            HERE = Path(__file__).parent
+            loaded_model = pickle.load(open(HERE / uploaded_file.name, 'rb'))
+        except:
+            st.write("There is no uploaded pickle file to open.")
     
-    #Getting test data
-    X_train, X_test, y_train, y_test = train_test_split(loaded_model.X, loaded_model.y, test_size=0.2, random_state=69)
-    
-    #Running classification/predicting
-    # Wall Climbing
-    pred_DTC = loaded_model.modelDTC.predict(X_test)
-    pred_SVC = loaded_model.modelSVC.predict(X_test)
-    # pred_GridSearchCV = loaded_model.modelGridSearchCV.predict(X_test)
-    
-    st.write("DecisionTreeClassifier accuracy: ", accuracy_score(y_test, pred_DTC))
-    st.write(pred_DTC)
-    plot_confusion_matrix(loaded_model.modelDTC, X_test, y_test)
-    st.pyplot()
-    st.write("SVC accuracy: ", accuracy_score(y_test, pred_SVC))
-    st.write(pred_SVC)
-    plot_confusion_matrix(loaded_model.modelSVC, X_test, y_test)
-    st.pyplot()
-    # st.write("GridSearchCV accuracy: ", accuracy_score(y_test, pred_GridSearchCV))
-    # st.write(pred_GridSearchCV)
-    # plot_confusion_matrix(loaded_model.modelGridSearchCV, X_test, y_test)
-    # st.pyplot()
+    st.write(loaded_model)
+
+    if loaded_model is not None:
+        st.write("Model loaded")
+            
+        #Getting test data
+        X_train, X_test, y_train, y_test = train_test_split(loaded_model.X, loaded_model.y, test_size=0.2, random_state=69)
+            
+        #Running classification/predicting
+        # Wall Climbing
+        pred_DTC = loaded_model.modelDTC.predict(X_test)
+        pred_SVC = loaded_model.modelSVC.predict(X_test)
+        # pred_GridSearchCV = loaded_model.modelGridSearchCV.predict(X_test)
+            
+        st.write("DecisionTreeClassifier model's accuracy: ", accuracy_score(y_test, pred_DTC))
+        st.write(pred_DTC)
+        st.write("Confusion matrix from the classified DecisionTreeClassifier datas:")
+        plot_confusion_matrix(loaded_model.modelDTC, X_test, y_test)
+        st.pyplot()
+        st.write("SVC model's accuracy: ", accuracy_score(y_test, pred_SVC))
+        st.write(pred_SVC)
+        st.write("Confusion matrix from the classified SVC datas:")
+        plot_confusion_matrix(loaded_model.modelSVC, X_test, y_test)
+        st.pyplot()
+        # st.write("GridSearchCV accuracy: ", accuracy_score(y_test, pred_GridSearchCV))
+        # st.write(pred_GridSearchCV)
+        # plot_confusion_matrix(loaded_model.modelGridSearchCV, X_test, y_test)
+        # st.pyplot()
 
 #---------------------------------------------------------------------
 
 st.write("""***""")
+st.write("This button plots/visualizes the currently selected dataset on a plot.")
 
 if st.button('Visualize data'):
     visualize_data()
