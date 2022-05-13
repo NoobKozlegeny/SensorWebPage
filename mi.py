@@ -36,6 +36,29 @@ def visualize_data ():
     st.line_chart(accelerometer_df)
     st.write(f"This is {filenames[filenames.index(selected) + 1]}'s data.")
     st.line_chart(gyro_df)
+    
+def classify_data ():
+    st.write("Model loaded")
+            
+    #Getting test data
+    X_train, X_test, y_train, y_test = train_test_split(loaded_model.X, loaded_model.y, test_size=0.2, random_state=69)
+    
+    #Running classification/predicting
+    # Wall Climbing
+    pred_DTC = loaded_model.modelDTC.predict(X_test)
+    pred_SVC = loaded_model.modelSVC.predict(X_test)
+    # pred_GridSearchCV = loaded_model.modelGridSearchCV.predict(X_test)
+        
+    st.write("DecisionTreeClassifier model's accuracy: ", accuracy_score(y_test, pred_DTC))
+    st.write(pred_DTC)
+    st.write("Confusion matrix from the classified DecisionTreeClassifier datas:")
+    plot_confusion_matrix(loaded_model.modelDTC, X_test, y_test)
+    st.pyplot()
+    st.write("SVC model's accuracy: ", accuracy_score(y_test, pred_SVC))
+    st.write(pred_SVC)
+    st.write("Confusion matrix from the classified SVC datas:")
+    plot_confusion_matrix(loaded_model.modelSVC, X_test, y_test)
+    st.pyplot()
 
 first = "https://1drv.ms/u/s!Ao3uECOrt_zivFsWZaLIUT2MCYNd?e=3OSLQT"
 filenames = ["FastACCELEROMETER0328", "FastGYROSCOPE0328",
@@ -59,6 +82,7 @@ You can view the data you uploaded or the data you selected from the list here
 """)
 
 st.write("""***""")
+st.write("""Uploaded data viewer""")
 st.write("In here you can view your uploaded file's content.")
 
 if st.button('View uploaded'):
@@ -72,13 +96,15 @@ if st.button('View uploaded'):
         elif pathlib.Path(uploaded_file.name).suffix == ".pickle":
             HERE = Path(__file__).parent
             loaded_model = pickle.load(open(HERE / uploaded_file.name, 'rb'))
-            st.write(loaded_model)
+            st.write("This pickle data object has these attributes:")
+            st.write([attr for attr in dir(loaded_model) if not attr.startswith('__')])
         else:
             st.write("Unknown file extension, I don't want to touch it.")
     else: 
         st.write('No file was uploaded!')
         
 st.write("""***""")
+st.write("""Selected data viewer""")
 st.write("In here you can view an already uploaded file's content.")
 
 if st.button('View selected'):
@@ -86,9 +112,9 @@ if st.button('View selected'):
     st.write(df)
     
 st.write("""***""")
-
-st.write("""Model loading""")
-st.write("Enter the exact filename (that you uploaded) into the text, with the file extension too.")
+st.write("""Data classifier""")
+st.write("1. option: Upload a pickle file and press the 'Classify pickle data' button.")
+st.write("2. option: Enter the exact filename (that you uploaded) into the text, with the file extension too, press apply on the text input and press the button.")
 filename = st.text_input("Enter file name")
 
 loaded_model = None
@@ -103,35 +129,9 @@ if st.button("Classify pickle data"):
             loaded_model = pickle.load(open(HERE / uploaded_file.name, 'rb'))
         except:
             st.write("There is no uploaded pickle file to open.")
-    
-    st.write(loaded_model)
 
     if loaded_model is not None:
-        st.write("Model loaded")
-            
-        #Getting test data
-        X_train, X_test, y_train, y_test = train_test_split(loaded_model.X, loaded_model.y, test_size=0.2, random_state=69)
-            
-        #Running classification/predicting
-        # Wall Climbing
-        pred_DTC = loaded_model.modelDTC.predict(X_test)
-        pred_SVC = loaded_model.modelSVC.predict(X_test)
-        # pred_GridSearchCV = loaded_model.modelGridSearchCV.predict(X_test)
-            
-        st.write("DecisionTreeClassifier model's accuracy: ", accuracy_score(y_test, pred_DTC))
-        st.write(pred_DTC)
-        st.write("Confusion matrix from the classified DecisionTreeClassifier datas:")
-        plot_confusion_matrix(loaded_model.modelDTC, X_test, y_test)
-        st.pyplot()
-        st.write("SVC model's accuracy: ", accuracy_score(y_test, pred_SVC))
-        st.write(pred_SVC)
-        st.write("Confusion matrix from the classified SVC datas:")
-        plot_confusion_matrix(loaded_model.modelSVC, X_test, y_test)
-        st.pyplot()
-        # st.write("GridSearchCV accuracy: ", accuracy_score(y_test, pred_GridSearchCV))
-        # st.write(pred_GridSearchCV)
-        # plot_confusion_matrix(loaded_model.modelGridSearchCV, X_test, y_test)
-        # st.pyplot()
+        classify_data()
 
 #---------------------------------------------------------------------
 

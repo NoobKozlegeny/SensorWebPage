@@ -17,7 +17,7 @@ from sklearn.metrics import accuracy_score
 
 def FittingAndEvaulate(name,model,X,y):
     # split the Train dataset again
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=69)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
     # fit the model on the NEW train dataset
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
@@ -58,9 +58,9 @@ class WallClimbing():
     y = AllData.iloc[:,-1]
 
     # Creating the modells
-    modelDTC = DecisionTreeClassifier(criterion ='entropy', max_depth =2, random_state=69)
-    param_grid = {'C': [0.1], #, 1, 10, 100, 1000
-                'gamma': [1], #, 0.1, 0.01, 0.001
+    modelDTC = DecisionTreeClassifier(criterion ='entropy', max_depth =2, random_state=0)
+    param_grid = {'C': [0.1, 1, 10, 100],
+                'gamma': [1, 0.1, 0.01, 0.001],
                 'kernel': ['rbf']}
     modelGridSearchCV = GridSearchCV(SVC(), param_grid, verbose = 2)
     
