@@ -1,5 +1,5 @@
-# GyroAcceleroWebPage
-A webpage for storing datas gathered by GyroAcceleroCollector with streamlit
+# SensorWebPage
+A webpage for storing data gathered by SensoroCollector with streamlit
 
 # What the hell is this?
 It's just a part of the project that my uni team got.
